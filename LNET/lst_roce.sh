@@ -3,7 +3,7 @@
 the_usage()
 {
         echo >&2
-        echo "usage: `basename $0` -c client-nids -s server-nids [-d distribute] [-n rpcs] [-r on|off] " >&2
+        echo "usage: `basename $0` -c client-nids -s server-nids -r on|off [-d distribute] [-n rpcs] " >&2
 	cat <<EOF 2>&1
 -c 		max number of client nids to use defaults to 1
 -s 		max number of server nids to use defaults to 1
@@ -25,10 +25,10 @@ LOGDIR=/tmp/lst_logs
 LST=lst
 
 # lst stat time interval
-LST_DELAY=60
+LST_DELAY=20
 
 # lst stat duration
-LST_DURATION=65
+LST_DURATION=25
 
 # max concurrency
 LST_CONCUR=8
@@ -104,6 +104,9 @@ fi
 
 rm -rf $LOGDIR
 mkdir -p $LOGDIR
+
+echo "$CLIENTS"
+echo "$SERVERS"
 
 NCLIENTS=0
 for CLI in $CLIENTS; do

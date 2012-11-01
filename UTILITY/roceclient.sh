@@ -18,12 +18,12 @@ preload ()
 roce_on ()
 {
   echo "$(date) $(hostname) Enabling RoCE" >> ${LOGFILE}
-  cp -f /etc/modprobe.d/lustre.conf.roceon /etc/modprobe.d/lustre.conf
+  sed -i 's/tcp/o2ib/g' /etc/modprobe.d/lustre.conf
 }
 roce_off ()
 {
   echo "$(date) $(hostname) Disabling RoCE" >> ${LOGFILE}
-  cp -f /etc/modprobe.d/lustre.conf.roceoff /etc/modprobe.d/lustre.conf
+  sed -i 's/o2ib/tcp/g' /etc/modprobe.d/lustre.conf
 }
 
 if [ "${ONOFF}x" == "onx" ];
