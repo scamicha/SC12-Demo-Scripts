@@ -90,10 +90,12 @@ if [ "${roce}x" == "onx" ];
 then
   CLIENTS= $IB_CLIENTS
   SERVERS= $IB_SERVERS
+  LOGDIR=/tmp/roce_lst_logs
 elif [ "${roce}x" == "offx" ];
 then
   CLIENTS= $TCP_CLIENTS
   SERVERS= $TCP_SERVERS
+  LOGDIR=/tmp/tcp_lst_logs
 else
   echo "derp!"
   the_usage
@@ -198,18 +200,22 @@ for (( i=1; i <= $MAX_CLIENTS; i=$(($i * 2)))) ; do
 	for RW in $BRW; do
 			# iterate over 1, 2, 4, 8 threads
 	    for (( c=1; c <= $LST_CONCUR; c=$(($c * 2)))) ; do
-		TEST_NAME="$RW-${i}cli-${j}srv-${c}concur-dist1:1"
+		for (( n=1; n <= $j; n=$(($n * 2)))) ; do
+		    TEST_NAME="$RW-${i}cli-${j}srv-${c}concur-dist1:$n"
 		
-		echo "running $TEST_NAME ......"
+		    echo "running $TEST_NAME ......"
 		
 #		vmstat $VM_DELAY > $LOGDIR/$TEST_NAME.vmstat &
-        	VMSTAT=$!
+        	    VMSTAT=$!
 
-		prep_test "$TEST_SRV" "$TEST_CLI"
-		$LST add_test --from cli --to srv --loop 9000000 --concurrency=$c --distribute=$DISTRIBUTE brw $RW size=${LST_BRW}k
-		done_test $TEST_NAME "$TEST_SRV" "$TEST_CLI"
+		    prep_test "$TEST_SRV" "$TEST_CLI"
+		    DISTRIBUTE=1:$n
+		    $LST add_test --from cli --to srv --loop 9000000 --concurrency=$c\
+ --distribute=$DISTRIBUTE brw $RW size=${LST_BRW}k
+		    done_test $TEST_NAME "$TEST_SRV" "$TEST_CLI"
 		
-		cleanup $VMSTAT
+		    cleanup $VMSTAT
+		done
 	    done
 	done
     done
