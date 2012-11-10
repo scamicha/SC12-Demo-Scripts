@@ -1,0 +1,14 @@
+IOR START
+	testFile = /lustre_roce/all/scamicha/data/file
+	api=POSIX
+	useO_DIRECT=0
+	verbose = 1
+	keepFile=1
+
+	filePerProc=1
+	repetitions=1
+	blockSize=50G
+	writeFile=1
+	useExistingTestFile=0
+	transferSize=1M
+IOR STOP
